@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>To Do App</title>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <nav class="top_nav">
+                <div class="logo">
+                    <h2>Todo App</h2>
+                </div>
+                <div class="settings">
+                    <i class="bx bx-cog"></i>
+                    <i class="bx bx-user-circle"></i>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="todo_creation">
+                <h2>My Todos</h2>
+                <form class="todo_form">
+                    <div class="fields">
+                        <label for="task_title">Title</label>
+                        <input type="text" id="task_title" placeholder="What's needs to be done">
+                    </div>
+                    <div class="fields">
+                        <label for="task_desc">Description</label>
+                        <input type="text" id="task_desc" placeholder="Add details....">
+                    </div>
+                    <button id="add_task" type="submit">
+                        Add Task
+                    </button>
+                </form>
+            </div>
+            <div class="status_nav">
+                <div class="status_btn">
+                    <button class="selected" data-status="todo">
+                        To do <span class="task_count">0</span>
+                    </button>
+                    <button data-status="active">
+                        In progress <span class="task_count">0</span>
+                    </button>
+                    <button data-status="completed">
+                        Completed <span class="task_count">0</span>
+                    </button>
+                </div>
+                <button id="notesBtn" class="notes_btn">
+                    <i class='bx bx-notepad'></i>
+                    Notes
+                </button>
+            </div>
+            <ul id="taskList"></ul>
+            <div id="notesContainer"></div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
