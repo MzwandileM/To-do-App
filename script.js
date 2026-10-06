@@ -18,7 +18,7 @@ let currentView = "tasks";
 // ======================================================
 
 function getTaskDesc() {
-    return document.getElementById("task_desc");
+  return document.getElementById("task_desc");
 }
 
 // ======================================================
@@ -26,9 +26,9 @@ function getTaskDesc() {
 // ======================================================
 
 function escapeHTML(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // ======================================================
@@ -36,11 +36,11 @@ function escapeHTML(text) {
 // ======================================================
 
 function loadTasks() {
-    const savedTasks = localStorage.getItem("tasks");
-    if (savedTasks) {
-        tasks = JSON.parse(savedTasks);
-    }
-    displayTask();
+  const savedTasks = localStorage.getItem("tasks");
+  if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+  }
+  displayTask();
 }
 
 // ======================================================
@@ -48,7 +48,7 @@ function loadTasks() {
 // ======================================================
 
 function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 // ======================================================
@@ -56,21 +56,21 @@ function saveTasks() {
 // ======================================================
 
 function loadNotes() {
-    const savedNotes = localStorage.getItem("notes");
-    if (savedNotes) {
-        notes = JSON.parse(savedNotes);
-        let updated = false;
-        notes.forEach(note => {
-            if (!note.createdAt) {
-                note.createdAt = new Date().toISOString();
-                updated = true;
-            }
-        });
-        if (updated) {
-            saveNotes();
-        }
+  const savedNotes = localStorage.getItem("notes");
+  if (savedNotes) {
+    notes = JSON.parse(savedNotes);
+    let updated = false;
+    notes.forEach((note) => {
+      if (!note.createdAt) {
+        note.createdAt = new Date().toISOString();
+        updated = true;
+      }
+    });
+    if (updated) {
+      saveNotes();
     }
-    displayNotes();
+  }
+  displayNotes();
 }
 
 // ======================================================
@@ -78,7 +78,7 @@ function loadNotes() {
 // ======================================================
 
 function saveNotes() {
-    localStorage.setItem("notes", JSON.stringify(notes));
+  localStorage.setItem("notes", JSON.stringify(notes));
 }
 
 // ======================================================
@@ -86,33 +86,31 @@ function saveNotes() {
 // ======================================================
 
 function displayTask() {
-    updateTaskCounts();
-    const filteredTasks = tasks.filter(task => {
-        return task.status === currentFilter;
-    });
-    if (filteredTasks.length === 0) {
-        const label =
-            currentFilter === "todo"
-                ? "to do"
-                : currentFilter === "active"
-                    ? "in progress"
-                    : "completed";
-        taskList.innerHTML = `
+  updateTaskCounts();
+  const filteredTasks = tasks.filter((task) => {
+    return task.status === currentFilter;
+  });
+  if (filteredTasks.length === 0) {
+    const label =
+      currentFilter === "todo"
+        ? "to do"
+        : currentFilter === "active"
+          ? "in progress"
+          : "completed";
+    taskList.innerHTML = `
             <li class="empty_state">
                 No ${label} tasks.
             </li>
         `;
-        return;
+    return;
+  }
+  let taskDisplay = "";
+  filteredTasks.forEach((task) => {
+    let completedDate = "";
+    if (task.completedAt) {
+      completedDate = new Date(task.completedAt).toLocaleString();
     }
-    let taskDisplay = "";
-    filteredTasks.forEach(task => {
-        let completedDate = "";
-        if (task.completedAt) {
-            completedDate = new Date(
-                task.completedAt
-            ).toLocaleString();
-        }
-        taskDisplay += `
+    taskDisplay += `
             <li
                 data-id="${task.id}"
                 class="${task.status === "completed" ? "completed" : ""}"
@@ -123,17 +121,19 @@ function displayTask() {
                 <div class="task_desc">
                     ${escapeHTML(task.taskDesc)}
                 </div>
-                ${task.status === "completed"
-                ? `
+                ${
+                  task.status === "completed"
+                    ? `
                             <div class="completion_date">
                                 Completed: ${completedDate}
                             </div>
                         `
-                : ""
-            }
+                    : ""
+                }
                 <div class="task_actions">
-                    ${task.status === "todo"
-                ? `
+                    ${
+                      task.status === "todo"
+                        ? `
                                 <button
                                     class="action-btn"
                                     data-action="active"
@@ -142,10 +142,11 @@ function displayTask() {
                                     ✓
                                 </button>
                             `
-                : ""
-            }
-                    ${task.status === "active"
-                ? `
+                        : ""
+                    }
+                    ${
+                      task.status === "active"
+                        ? `
                                 <button
                                     class="action-btn"
                                     data-action="complete"
@@ -154,10 +155,11 @@ function displayTask() {
                                     ✓
                                 </button>
                             `
-                : ""
-            }
-                    ${task.status === "completed"
-                ? `
+                        : ""
+                    }
+                    ${
+                      task.status === "completed"
+                        ? `
                                 <button
                                     class="action-btn"
                                     data-action="active"
@@ -166,8 +168,8 @@ function displayTask() {
                                     ↩
                                 </button>
                             `
-                : ""
-            }
+                        : ""
+                    }
                     <button
                         class="action-btn edit-btn"
                         data-action="edit"
@@ -185,8 +187,8 @@ function displayTask() {
                 </div>
             </li>
         `;
-    });
-    taskList.innerHTML = taskDisplay;
+  });
+  taskList.innerHTML = taskDisplay;
 }
 
 // ======================================================
@@ -194,24 +196,27 @@ function displayTask() {
 // ======================================================
 
 function updateTaskCounts() {
-    const todoCount = tasks.filter(task => {
-        return task.status === "todo";
-    }).length;
-    const activeCount = tasks.filter(task => {
-        return task.status === "active";
-    }).length;
-    const completedCount = tasks.filter(task => {
-        return task.status === "completed";
-    }).length;
-    document.querySelector(
-        '[data-status="todo"] .task_count'
-    ).textContent = todoCount;
-    document.querySelector(
-        '[data-status="active"] .task_count'
-    ).textContent = activeCount;
-    document.querySelector(
-        '[data-status="completed"] .task_count'
-    ).textContent = completedCount;
+  const todoCount = tasks.filter((task) => {
+    return task.status === "todo";
+  }).length;
+  const activeCount = tasks.filter((task) => {
+    return task.status === "active";
+  }).length;
+  const completedCount = tasks.filter((task) => {
+    return task.status === "completed";
+  }).length;
+  document.querySelector('[data-status="todo"] .task_count').textContent =
+    todoCount;
+  document.querySelector('[data-status="active"] .task_count').textContent =
+    activeCount;
+  document.querySelector('[data-status="completed"] .task_count').textContent =
+    completedCount;
+}
+// ======================================================
+// UPDATE NOTES COUNTS
+// ======================================================
+function updateNoteCount() {
+  document.querySelector("#notesBtn .task_count").textContent = notes.length;
 }
 
 // ======================================================
@@ -219,21 +224,24 @@ function updateTaskCounts() {
 // ======================================================
 
 function displayNotes() {
-    if (notes.length === 0) {
-        notesContainer.innerHTML = `
+  updateNoteCount();
+
+  if (notes.length === 0) {
+    notesContainer.innerHTML = `
             <div class="empty_state">
                 No notes yet.
             </div>
         `;
-        return;
-    }
+    return;
+  }
 
-    let notesDisplay = "";
-    notes.forEach(note => {
-        const noteDate = note.createdAt
-            ? new Date(note.createdAt).toLocaleDateString()
-            : "No date";
-        notesDisplay += `
+  let notesDisplay = "";
+
+  notes.forEach((note) => {
+    const noteDate = note.createdAt
+      ? new Date(note.createdAt).toLocaleDateString()
+      : "No date";
+    notesDisplay += `
             <div
                 class="note_card"
                 data-id="${note.id}"
@@ -244,9 +252,12 @@ function displayNotes() {
                     </h3>
                 </div>
                 <div class="note_content">
-                    <p>
-                        ${escapeHTML(note.content)}
-                    </p>
+                    ${note.content
+                      .split("\n")
+                      .map((line) => {
+                        return `<div>${escapeHTML(line)}</div>`;
+                      })
+                      .join("")}
                 </div>
                 <div class="note_actions">
                     <span class="note_date">
@@ -269,8 +280,8 @@ function displayNotes() {
                 </div>
             </div>
         `;
-    });
-    notesContainer.innerHTML = notesDisplay;
+  });
+  notesContainer.innerHTML = notesDisplay;
 }
 
 // ======================================================
@@ -278,26 +289,26 @@ function displayNotes() {
 // ======================================================
 
 function updateDescriptionField() {
-    const currentField = document.getElementById("task_desc");
-    if (currentView === "notes") {
-        if (currentField.tagName === "TEXTAREA") {
-            return;
-        }
-        const textarea = document.createElement("textarea");
-        textarea.id = "task_desc";
-        textarea.placeholder = "Write your note...";
-        textarea.rows = 4;
-        currentField.replaceWith(textarea);
-    } else {
-        if (currentField.tagName === "INPUT") {
-            return;
-        }
-        const input = document.createElement("input");
-        input.type = "text";
-        input.id = "task_desc";
-        input.placeholder = "Add details....";
-        currentField.replaceWith(input);
+  const currentField = document.getElementById("task_desc");
+  if (currentView === "notes") {
+    if (currentField.tagName === "TEXTAREA") {
+      return;
     }
+    const textarea = document.createElement("textarea");
+    textarea.id = "task_desc";
+    textarea.placeholder = "Write your note...";
+    textarea.rows = 4;
+    currentField.replaceWith(textarea);
+  } else {
+    if (currentField.tagName === "INPUT") {
+      return;
+    }
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "task_desc";
+    input.placeholder = "Add details....";
+    currentField.replaceWith(input);
+  }
 }
 
 // ======================================================
@@ -305,25 +316,19 @@ function updateDescriptionField() {
 // ======================================================
 
 function updateFormForCurrentView() {
-    const descriptionLabel = document.querySelector(
-        'label[for="task_desc"]'
-    );
-    if (currentView === "notes") {
-        descriptionLabel.textContent = "Note";
-        taskTitle.placeholder = "Note title";
-        addTaskBtn.textContent =
-            editingType === "note"
-                ? "Update Note"
-                : "Add Note";
-    } else {
-        descriptionLabel.textContent = "Description";
-        taskTitle.placeholder = "What's needs to be done";
-        addTaskBtn.textContent =
-            editingType === "task"
-                ? "Update Task"
-                : "Add Task";
-    }
-    updateDescriptionField();
+  const descriptionLabel = document.querySelector('label[for="task_desc"]');
+  if (currentView === "notes") {
+    descriptionLabel.textContent = "Note";
+    taskTitle.placeholder = "Note title";
+    addTaskBtn.textContent =
+      editingType === "note" ? "Update Note" : "Add Note";
+  } else {
+    descriptionLabel.textContent = "Description";
+    taskTitle.placeholder = "What's needs to be done";
+    addTaskBtn.textContent =
+      editingType === "task" ? "Update Task" : "Add Task";
+  }
+  updateDescriptionField();
 }
 
 // ======================================================
@@ -331,69 +336,68 @@ function updateFormForCurrentView() {
 // ======================================================
 
 function handleFormSubmit(event) {
-    event.preventDefault();
-    const title = taskTitle.value.trim();
-    const description = getTaskDesc().value.trim();
-    if (title === "" || description === "") {
-        return;
+  event.preventDefault();
+  const title = taskTitle.value.trim();
+  const description = getTaskDesc().value.trim();
+  if (title === "" || description === "") {
+    return;
+  }
+  // UPDATE EXISTING ITEM
+  if (editingId !== null) {
+    if (editingType === "task") {
+      const task = tasks.find((task) => {
+        return task.id === editingId;
+      });
+      if (task) {
+        task.taskTitle = title;
+        task.taskDesc = description;
+      }
+      saveTasks();
+      displayTask();
     }
-    // UPDATE EXISTING ITEM
-    if (editingId !== null) {
-        if (editingType === "task") {
-            const task = tasks.find(task => {
-                return task.id === editingId;
-            });
-            if (task) {
-                task.taskTitle = title;
-                task.taskDesc = description;
-            }
-            saveTasks();
-            displayTask();
-        }
-        if (editingType === "note") {
-            const note = notes.find(note => {
-                return note.id === editingId;
-            });
-            if (note) {
-                note.title = title;
-                note.content = description;
-            }
-            saveNotes();
-            displayNotes();
-        }
-        editingId = null;
-        editingType = null;
+    if (editingType === "note") {
+      const note = notes.find((note) => {
+        return note.id === editingId;
+      });
+      if (note) {
+        note.title = title;
+        note.content = description;
+      }
+      saveNotes();
+      displayNotes();
     }
+    editingId = null;
+    editingType = null;
+  }
 
-    // CREATE NEW ITEM
-
-    else {
-        if (currentView === "tasks") {
-            const newTask = {
-                id: crypto.randomUUID(),
-                taskTitle: title,
-                taskDesc: description,
-                status: "todo",
-                completedAt: null
-            };
-            tasks.push(newTask);
-            saveTasks();
-            displayTask();
-        }
-        if (currentView === "notes") {
-            const newNote = {
-                id: crypto.randomUUID(),
-                title: title,
-                content: description,
-                createdAt: new Date().toISOString()
-            };
-            notes.push(newNote);
-            saveNotes();
-            displayNotes();
-        }
+  // CREATE NEW ITEM
+  else {
+    if (currentView === "tasks") {
+      const newTask = {
+        id: crypto.randomUUID(),
+        taskTitle: title,
+        taskDesc: description,
+        status: "todo",
+        completedAt: null,
+      };
+      tasks.push(newTask);
+      saveTasks();
+      displayTask();
     }
-    clearForm();
-    updateFormForCurrentView();
+    if (currentView === "notes") {
+      const newNote = {
+        id: crypto.randomUUID(),
+        title: title,
+        content: description,
+        createdAt: new Date().toISOString(),
+      };
+      notes.push(newNote);
+      saveNotes();
+      displayNotes();
+    }
+  }
+  clearForm();
+  updateFormForCurrentView();
 }
 
 // ======================================================
@@ -401,9 +405,9 @@ function handleFormSubmit(event) {
 // ======================================================
 
 function clearForm() {
-    taskTitle.value = "";
-    getTaskDesc().value = "";
-    taskTitle.focus();
+  taskTitle.value = "";
+  getTaskDesc().value = "";
+  taskTitle.focus();
 }
 
 // ======================================================
@@ -411,20 +415,20 @@ function clearForm() {
 // ======================================================
 
 function editTask(id) {
-    const task = tasks.find(task => {
-        return task.id === id;
-    });
-    if (!task) {
-        return;
-    }
-    currentView = "tasks";
-    editingId = id;
-    editingType = "task";
-    updateDescriptionField();
-    taskTitle.value = task.taskTitle;
-    getTaskDesc().value = task.taskDesc;
-    addTaskBtn.textContent = "Update Task";
-    taskTitle.focus();
+  const task = tasks.find((task) => {
+    return task.id === id;
+  });
+  if (!task) {
+    return;
+  }
+  currentView = "tasks";
+  editingId = id;
+  editingType = "task";
+  updateDescriptionField();
+  taskTitle.value = task.taskTitle;
+  getTaskDesc().value = task.taskDesc;
+  addTaskBtn.textContent = "Update Task";
+  taskTitle.focus();
 }
 
 // ======================================================
@@ -432,11 +436,11 @@ function editTask(id) {
 // ======================================================
 
 function removeTask(id) {
-    tasks = tasks.filter(task => {
-        return task.id !== id;
-    });
-    saveTasks();
-    displayTask();
+  tasks = tasks.filter((task) => {
+    return task.id !== id;
+  });
+  saveTasks();
+  displayTask();
 }
 
 // ======================================================
@@ -444,21 +448,21 @@ function removeTask(id) {
 // ======================================================
 
 function changeTaskStatus(id, newStatus) {
-    const task = tasks.find(task => {
-        return task.id === id;
-    });
-    if (!task) {
-        return;
-    }
-    task.status = newStatus;
-    if (newStatus === "completed") {
-        task.completedAt = new Date().toISOString();
-    }
-    if (newStatus !== "completed") {
-        task.completedAt = null;
-    }
-    saveTasks();
-    displayTask();
+  const task = tasks.find((task) => {
+    return task.id === id;
+  });
+  if (!task) {
+    return;
+  }
+  task.status = newStatus;
+  if (newStatus === "completed") {
+    task.completedAt = new Date().toISOString();
+  }
+  if (newStatus !== "completed") {
+    task.completedAt = null;
+  }
+  saveTasks();
+  displayTask();
 }
 
 // ======================================================
@@ -466,20 +470,20 @@ function changeTaskStatus(id, newStatus) {
 // ======================================================
 
 function editNote(id) {
-    const note = notes.find(note => {
-        return note.id === id;
-    });
-    if (!note) {
-        return;
-    }
-    currentView = "notes";
-    editingId = id;
-    editingType = "note";
-    updateDescriptionField();
-    taskTitle.value = note.title;
-    getTaskDesc().value = note.content;
-    addTaskBtn.textContent = "Update Note";
-    taskTitle.focus();
+  const note = notes.find((note) => {
+    return note.id === id;
+  });
+  if (!note) {
+    return;
+  }
+  currentView = "notes";
+  editingId = id;
+  editingType = "note";
+  updateDescriptionField();
+  taskTitle.value = note.title;
+  getTaskDesc().value = note.content;
+  addTaskBtn.textContent = "Update Note";
+  taskTitle.focus();
 }
 
 // ======================================================
@@ -487,11 +491,11 @@ function editNote(id) {
 // ======================================================
 
 function deleteNote(id) {
-    notes = notes.filter(note => {
-        return note.id !== id;
-    });
-    saveNotes();
-    displayNotes();
+  notes = notes.filter((note) => {
+    return note.id !== id;
+  });
+  saveNotes();
+  displayNotes();
 }
 
 // ======================================================
@@ -499,28 +503,28 @@ function deleteNote(id) {
 // ======================================================
 
 taskList.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-action]");
-    if (!button) {
-        return;
-    }
-    const taskElement = button.closest("li");
-    if (!taskElement) {
-        return;
-    }
-    const taskId = taskElement.dataset.id;
-    const action = button.dataset.action;
-    if (action === "active") {
-        changeTaskStatus(taskId, "active");
-    }
-    if (action === "complete") {
-        changeTaskStatus(taskId, "completed");
-    }
-    if (action === "edit") {
-        editTask(taskId);
-    }
-    if (action === "delete") {
-        removeTask(taskId);
-    }
+  const button = event.target.closest("[data-action]");
+  if (!button) {
+    return;
+  }
+  const taskElement = button.closest("li");
+  if (!taskElement) {
+    return;
+  }
+  const taskId = taskElement.dataset.id;
+  const action = button.dataset.action;
+  if (action === "active") {
+    changeTaskStatus(taskId, "active");
+  }
+  if (action === "complete") {
+    changeTaskStatus(taskId, "completed");
+  }
+  if (action === "edit") {
+    editTask(taskId);
+  }
+  if (action === "delete") {
+    removeTask(taskId);
+  }
 });
 
 // ======================================================
@@ -528,45 +532,45 @@ taskList.addEventListener("click", function (event) {
 // ======================================================
 
 notesContainer.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-note-action]");
-    if (!button) {
-        return;
-    }
-    const noteElement = button.closest(".note_card");
-    if (!noteElement) {
-        return;
-    }
-    const noteId = noteElement.dataset.id;
-    const action = button.dataset.noteAction;
-    if (action === "edit") {
-        editNote(noteId);
-    }
-    if (action === "delete") {
-        deleteNote(noteId);
-    }
+  const button = event.target.closest("[data-note-action]");
+  if (!button) {
+    return;
+  }
+  const noteElement = button.closest(".note_card");
+  if (!noteElement) {
+    return;
+  }
+  const noteId = noteElement.dataset.id;
+  const action = button.dataset.noteAction;
+  if (action === "edit") {
+    editNote(noteId);
+  }
+  if (action === "delete") {
+    deleteNote(noteId);
+  }
 });
 
 // ======================================================
 // STATUS FILTER
 // ======================================================
 
-statusButtons.forEach(button => {
-    button.addEventListener("click", function () {
-        currentView = "tasks";
-        currentFilter = this.dataset.status;
-        statusButtons.forEach(btn => {
-            btn.classList.remove("selected");
-        });
-        this.classList.add("selected");
-        notesBtn.classList.remove("selected");
-        taskList.style.display = "flex";
-        notesContainer.style.display = "none";
-        editingId = null;
-        editingType = null;
-        updateFormForCurrentView();
-        clearForm();
-        displayTask();
+statusButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    currentView = "tasks";
+    currentFilter = this.dataset.status;
+    statusButtons.forEach((btn) => {
+      btn.classList.remove("selected");
     });
+    this.classList.add("selected");
+    notesBtn.classList.remove("selected");
+    taskList.style.display = "flex";
+    notesContainer.style.display = "none";
+    editingId = null;
+    editingType = null;
+    updateFormForCurrentView();
+    clearForm();
+    displayTask();
+  });
 });
 
 // ======================================================
@@ -574,18 +578,18 @@ statusButtons.forEach(button => {
 // ======================================================
 
 notesBtn.addEventListener("click", function () {
-    currentView = "notes";
-    taskList.style.display = "none";
-    notesContainer.style.display = "flex";
-    statusButtons.forEach(button => {
-        button.classList.remove("selected");
-    });
-    notesBtn.classList.add("selected");
-    editingId = null;
-    editingType = null;
-    updateFormForCurrentView();
-    clearForm();
-    displayNotes();
+  currentView = "notes";
+  taskList.style.display = "none";
+  notesContainer.style.display = "flex";
+  statusButtons.forEach((button) => {
+    button.classList.remove("selected");
+  });
+  notesBtn.classList.add("selected");
+  editingId = null;
+  editingType = null;
+  updateFormForCurrentView();
+  clearForm();
+  displayNotes();
 });
 
 // ======================================================
